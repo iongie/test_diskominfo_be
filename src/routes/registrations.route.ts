@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import { Create, EmailExist, Read } from "../controllers/registrations.controller";
+import { Count, Create, EmailExist, Read, Searching } from "../controllers/registrations.controller";
 import { Registrations } from "../entities/registrations.entity";
 import { registrationUtil } from "../utils/registration.util";
 import { validatorUtil } from "../utils/validator.util";
@@ -11,6 +11,8 @@ export default class RegistrationsRoute {
         this.create(app);
         this.read(app);
         this.checkEmail(app);
+        this.countData(app);
+        this.search(app)
     }
 
     create(app: Router) {
@@ -32,7 +34,11 @@ export default class RegistrationsRoute {
 
     read(app: Router) {
         app.get('/read-registration', (req: Request, res: Response) => {
-            Read((registrations: Registrations[], err: Error) => {
+            const param = {
+                offset: req.query.offset,
+                limit: req.query.limit
+            }
+            Read(param, (err: Error, registrations: any) => {
                 if (err) {
                     return res.status(500).json({ "message": err });
                 }
@@ -42,9 +48,38 @@ export default class RegistrationsRoute {
         })
     }
 
-    checkEmail(app:Router){
+    checkEmail(app: Router) {
         app.post('/checkemail', (req: Request, res: Response) => {
-            EmailExist(req.body.email, (err: Error, registrations: Registrations[]) => {
+            EmailExist(req.body.email, (err: Error, registrations: any) => {
+                if (err) {
+                    return res.status(500).json({ "message": err });
+                }
+
+                res.status(200).json({ "data": registrations });
+            })
+        })
+    }
+
+    countData(app: Router) {
+        app.get('/total-registration', (req: Request, res: Response) => {
+            const param = {
+                offset: req.query.offset,
+                limit: req.query.limit
+            }
+            Count(param, (err: Error, registrations: any) => {
+                if (err) {
+                    return res.status(500).json({ "message": err });
+                }
+                
+                res.status(200).json({ "data": registrations.length });
+            })
+        })
+    }
+
+    search(app: Router) {
+        app.get('/search-registration', (req: Request, res: Response) => {
+            const like= req.query.like
+            Searching(like?.toString(), (err: Error, registrations: any) => {
                 if (err) {
                     return res.status(500).json({ "message": err });
                 }

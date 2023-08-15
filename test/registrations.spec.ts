@@ -9,8 +9,11 @@ import { Registrations } from '../src/entities/registrations.entity';
 
 describe('Registration API', () => {
     it('Menampilkan data registrasi', async () => {
-        const response = await request(appMain).get('/read-registration');
-
+        const parameters = {
+            limit: "10",
+            offset: "0"
+        }
+        const response = await request(appMain).get('/read-registration').query(parameters);
         expect(response.status).to.equal(200);
     });
     
@@ -38,8 +41,8 @@ describe('Registration API', () => {
 
     it('Input data benar', async () => {
         let data = {
-            name: 'Gigih',
-            email: 'kaido985042@gmail.com',
+            name: 'fatimatu qonitah',
+            email: 'fqonitah90@gmail.com',
             alamat: 'Jalan Pendidikan 1'
         }
         const response = await request(appMain).post('/create-registration').send(data);
@@ -68,7 +71,7 @@ describe('Send Email', ()=> {
     })
 
     it("Mencoba Check Email", async()=>{
-        await EmailExist("gigih985042@gmail.com", (err: Error, registrations: Registrations[]) => {
+        await EmailExist("gigih985042@gmail.com", (err: Error, registrations: any) => {
             if(err){
                 console.log({ "message": err });
             }

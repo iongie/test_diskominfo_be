@@ -19,9 +19,9 @@ export const dataSource = new DataSource({
 
 export function optionsMail(toMail: string) {
     return {
-        from: "TESTING <gigihsantoso0524@gmail.com>", // sender address
+        from: "Registration App <gigihsantoso0524@gmail.com>", // sender address
         to: toMail, // receiver email
-        subject: "Send email in Node.JS with Nodemailer using Gmail account", // Subject line
+        subject: "Notification Registratiom", // Subject line
         text: "Success Registered"
     }
 }
